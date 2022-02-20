@@ -22,7 +22,8 @@ interface ICryptoDevsNFT {
 
     function tokenOfOwnerByIndex(address owner, uint256 index)
         external 
-        viewreturns (uint256);
+        view
+        returns (uint256);
 }
 
 contract CryptoDevsDAO is Ownable {
@@ -33,7 +34,7 @@ contract CryptoDevsDAO is Ownable {
         uint256 yayVotes;
         uint256 nayVotes;
         bool executed;
-        mappint(uint256 => bool) voters;
+        mapping(uint256 => bool) voters;
     }
 
     mapping(uint256 => Proposal) public proposals;
@@ -49,7 +50,7 @@ contract CryptoDevsDAO is Ownable {
     }
 
     modifier nftHolderOnly() {
-        require(cryptoDevsNFT.balanceOF(msg.sender) > 0, "NOT_A_DAO_MEMBER");
+        require(cryptoDevsNFT.balanceOf(msg.sender) > 0, "NOT_A_DAO_MEMBER");
         _;
     }
 
@@ -95,7 +96,7 @@ contract CryptoDevsDAO is Ownable {
         Proposal storage proposal = proposals[proposalIndex];
 
         uint256 voterNFTBalance = cryptoDevsNFT.balanceOf(msg.sender);
-        uint256 numbVotes = 0;
+        uint256 numVotes = 0;
 
         // Calculate how many NFTs are owned by the voter
         // that haven't already been used for voting on this proposal
