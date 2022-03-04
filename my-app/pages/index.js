@@ -158,5 +158,62 @@ export default function Home() {
     }
   };
 
+  // Helper function to fetch a Provider/Signer instance from Metamask
+  const getProviderorSigner = async (needSigner = false) => {
+    const provider = await web3ModalRef.current.connect();
+    const web3Provider = new providers.Web3Provider(provider);
+
+    const { chainId } = await web3Provider.getNetwork();
+    if (chainId !== 4) {
+      window.alert("Please switch to the Rinkeby network!");
+      throw new Error("Please switch to the Rinkeby network");
+    }
+
+    if (needSigner) {
+      const signer = web3Provider.getSigner();
+      return signer;
+    }
+    return web3Provider;
+  };
+
+  // Helper function to return a DAO Contract instance given a Provider/Signer
+  const getDaoContractInstance = (providerOrSigner) => {
+    return new Contract(
+      CRYPTODEVS_DAO_CONTRACT_ADDRESS,
+      CRYPTODEVS_DAO_ABI,
+      providerOrSigner
+    );
+  };
+
+  // Helper function to return a CryptoDevs NFT Contract instance given a provider/signer
+  const getCryptodevsNFTContractInstance = (providerOrSigner) => {
+    return new Contract(
+      CRYPTODEVS_NFT_CONTRACT_ADDRESS,
+      CRYPTODEVS_NFT_ABI,
+      providerOrSigner
+    );
+  };
+
+  // runs everytime the value of 'walletConnected' changes
+  // so when a wallet connects or disconnects 
+  // promps user to connect wallet if not connected
+  // then calls helper functions to fetch the
+  // DAO treasury balance, user nft balance, and number of proposals in the DAO
+  useEffect(() => {
+    if (!walletConnected) {
+      web3ModalRef.current = new Web3Modal({
+        network: "rinkeby",
+        providerOptions: {},
+        disableInjectedProvider: false,
+      });
+
+      connectWallet().then(() => {
+        getDAOTreasuryBalance();
+        getUserNFTBalance();
+        getNumProposalsInDAO();
+      });
+    }
+  }, [walletConnected]);
+
   
 }
