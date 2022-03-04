@@ -123,4 +123,40 @@ export default function Home() {
       console.error(error);
     }
   }; 
+
+  // Calls the 'voteOnProposal' function in the contract, using the passed proposal ID and Vote
+  const voteOnProposal = async (proposalId, _vote) => {
+    try {
+      const signer = await getProviderorSigner(true);
+      const daoContract = getDaoContractInstance(signer);
+      
+      let vote = _vote === "YAY" ? 0 : 1;
+      const txn = await daoContract.voteOnProposal(proposalId, vote);
+      setLoading(true);
+      await txn.wait();
+      setLoading(false);
+      await fetchAllProposals();
+    } catch (error) {
+      console.error(error);
+      window.alert(error.data.message);
+    }
+  };
+
+  // Calls the 'executeProposal' function in the contract, using the passed proposal ID
+  const executeProposal = async (proposalId) => {
+    try {
+      const signer = await getProviderorSigner(true);
+      const daoContract = getDaoContractInstance(signer);
+      const txn = await daoContract.executeProposal(proposalId);
+      setLoading(true);
+      await txn.wait();
+      setLoading(false);
+      await fetchAllProposals();
+    } catch (error) {
+      console.error(error);
+      window.alert(error.data.message);
+    }
+  };
+
+  
 }
