@@ -64,7 +64,7 @@ export default function Home() {
       const signer = getProviderorSigner(true);
       const nftContract = getCryptodevsNFTContractInstance(signer);
       const balance = await nftContract.balanceOf(signer.getAddress());
-      setNftBalance(parceInt(balance.toString()));
+      setNftBalance(parseInt(balance.toString()));
     } catch (error) {
       console.error(error);
     }
